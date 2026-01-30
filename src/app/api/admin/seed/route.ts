@@ -7,12 +7,11 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    // 1. Ler o JSON
     const jsonPath = join(process.cwd(), 'prisma', 'BANCO_ATIVIDADES_TEENS.json');
     const raw = readFileSync(jsonPath, 'utf-8');
     const db = JSON.parse(raw);
 
-    // 2. Criar Agentes Estressores (com icon e category que o Prisma exigiu)
+    // Agentes estressores
     const stressores = [
       { name: 'Ansiedade do Agora', icon: 'clock', category: 'emocional', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
       { name: 'Pressão do Grupo', icon: 'users', category: 'social', description: 'Gastar para se sentir aceito pelos amigos.' },
@@ -31,29 +30,51 @@ export async function GET() {
     for (const s of stressores) {
       await prisma.stressorAgent.upsert({
         where: { name: s.name },
-        update: { description: s.description, icon: s.icon, category: s.category },
+        update: {
+          description: s.description,
+          icon: s.icon,
+          category: s.category,
+        },
         create: s,
       });
     }
 
-    // 3. Criar Atividades
+    // Atividades
     for (const a of db.atividades) {
       await prisma.activity.upsert({
         where: { code: a.codigo },
-        update: { title: a.nome, xpReward: a.pontos },
+        update: {
+          name: a.nome,
+          points: a.pontos,
+        },
         create: {
           code: a.codigo,
           module: a.modulo,
-          title: a.nome,
+          name: a.nome,
           objective: a.objetivo,
-          xpReward: a.pontos,
           tasks: a.tarefas,
+          tools: a.ferramenta ?? {},
+          successCriteria: a.criteriosSucesso ?? {},
+          referenceModels: a.modelosReferencia ?? {},
+          impact: a.impactoJornada ?? '',
+          points: a.pontos,
+          suggestedDuration: a.prazoSugerido ?? '',
+          prerequisites: a.prerequisitos ?? [],
+          coreDrives: [],
         },
       });
     }
 
-    return NextResponse.json({ message: "Seed executado com sucesso! Banco populado." });
+    return NextResponse.json({
+      ok: true,
+      message: '✅ Seed executado com sucesso',
+      atividades: db.atividades.length,
+      stressores: stressores.length,
+    });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { ok: false, error: error.message },
+      { status: 500 }
+    );
   }
 }
