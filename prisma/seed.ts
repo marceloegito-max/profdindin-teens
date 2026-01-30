@@ -13,28 +13,28 @@ async function main() {
   const db = JSON.parse(raw);
 
   // --- 1) Agentes Estressores (upsert para serem idempotentes) ---
-  const stressores = [
-    { name: 'Ansiedade do Agora', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
-    { name: 'Pressão do Grupo', description: 'Gastar para se sentir aceito pelos amigos.' },
-    { name: 'Medo de Perder (FOMO)', description: 'Medo de ficar de fora de tendências ou eventos.' },
-    { name: 'Desejo de Status', description: 'Comprar itens para demonstrar poder ou riqueza.' },
-    { name: 'Falta de Limites', description: 'Dificuldade em dizer não para si mesmo.' },
-    { name: 'Imediatismo', description: 'Busca por prazer rápido ignorando metas de longo prazo.' },
-    { name: 'Comparação Social', description: 'Sentir-se inferior ao ver a vida (editada) dos outros.' },
-    { name: 'Publicidade Agressiva', description: 'Cair em gatilhos de marketing e promoções falsas.' },
-    { name: 'Desorganização', description: 'Não saber para onde o dinheiro está indo.' },
-    { name: 'Insegurança', description: 'Comprar para tentar preencher vazios emocionais.' },
-    { name: 'Impulsividade', description: 'Agir sem refletir, especialmente em compras online.' },
-    { name: 'Falta de Propósito', description: 'Gastar por gastar, sem ter um sonho ou meta clara.' },
-  ];
+const stressores = [
+  { name: 'Ansiedade do Agora', icon: 'clock', category: 'emocional', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
+  { name: 'Pressão do Grupo', icon: 'users', category: 'social', description: 'Gastar para se sentir aceito pelos amigos.' },
+  { name: 'Medo de Perder (FOMO)', icon: 'alert-circle', category: 'emocional', description: 'Medo de ficar de fora de tendências ou eventos.' },
+  { name: 'Desejo de Status', icon: 'award', category: 'social', description: 'Comprar itens para demonstrar poder ou riqueza.' },
+  { name: 'Falta de Limites', icon: 'slash', category: 'comportamental', description: 'Dificuldade em dizer não para si mesmo.' },
+  { name: 'Imediatismo', icon: 'zap', category: 'comportamental', description: 'Busca por prazer rápido ignorando metas de longo prazo.' },
+  { name: 'Comparação Social', icon: 'eye', category: 'social', description: 'Sentir-se inferior ao ver a vida (editada) dos outros.' },
+  { name: 'Publicidade Agressiva', icon: 'megaphone', category: 'externo', description: 'Cair em gatilhos de marketing e promoções falsas.' },
+  { name: 'Desorganização', icon: 'shuffle', category: 'comportamental', description: 'Não saber para onde o dinheiro está indo.' },
+  { name: 'Insegurança', icon: 'shield-off', category: 'emocional', description: 'Comprar para tentar preencher vazios emocionais.' },
+  { name: 'Impulsividade', icon: 'trending-up', category: 'comportamental', description: 'Agir sem refletir, especialmente em compras online.' },
+  { name: 'Falta de Propósito', icon: 'compass', category: 'emocional', description: 'Gastar por gastar, sem ter um sonho ou meta clara.' },
+];
 
-  for (const s of stressores) {
-    await prisma.stressorAgent.upsert({
-      where: { name: s.name },
-      update: { description: s.description },
-      create: s,
-    });
-  }
+for (const s of stressores) {
+  await prisma.stressorAgent.upsert({
+    where: { name: s.name },
+    update: { description: s.description, icon: s.icon, category: s.category },
+    create: s,
+  });
+}
   console.log('✅ Agentes estressores criados/atualizados.');
 
   // --- 2) Atividades (upsert por código) ---
