@@ -1,0 +1,548 @@
+{
+  "modulo": "Professor Dindin Teens",
+  "versao": "1.0",
+  "publicoAlvo": "12-19 anos",
+  "totalAtividades": 30,
+  "atividades": [
+    {
+      "codigo": "CK-01",
+      "modulo": "checkup",
+      "nome": "O Detector de Glitches Emocionais",
+      "objetivo": "Mapear quais sentimentos disparam gastos impulsivos (comida, skins, itens de jogos)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Anotar os últimos 3 gastos não planejados. Para cada um, marque o que sentia: Tédio? Raiva? FOMO?"},
+        {"tipo": "reflexao", "descricao": "Se você tivesse esperado 10 minutos, ainda teria comprado? O item valeu a pena 2 dias depois?"},
+        {"tipo": "acao", "descricao": "Criar um Nome para o seu principal vilão emocional (ex: O Monstro do Tédio)"}
+      ],
+      "ferramenta": "Diário de Gatilhos (App), Notificação de Humor",
+      "criteriosSucesso": ["Registrou 3 gastos impulsivos", "Identificou a emoção predominante", "Nomeou o gatilho principal"],
+      "modelosReferencia": ["Freud (Id vs Ego)", "Taleb (Via Negativa)"],
+      "impactoJornada": "Transforma impulsos invisíveis em dados concretos para o seu controle",
+      "prerequisitos": [],
+      "pontos": 100,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "CK-02",
+      "modulo": "checkup",
+      "nome": "O Detetive das Micro-Sangrias",
+      "objetivo": "Somar os pequenos gastos que parecem inofensivos (balas, ubers curtos, micro-transações em jogos)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Listar todos os gastos menores que R$ 20,00 na última semana"},
+        {"tipo": "reflexao", "descricao": "Multiplicar esse valor por 4 (mês) e por 12 (ano). Esse dinheiro compraria algo Épico?"},
+        {"tipo": "acao", "descricao": "Cortar UM desses micro-gastos na próxima semana"}
+      ],
+      "ferramenta": "Calculadora de Acúmulo, Scanner de Extrato",
+      "criteriosSucesso": ["Identificou pelo menos 5 micro-gastos", "Calculou o custo anual", "Elegeu um gasto para eliminar"],
+      "modelosReferencia": ["Falconi (Gestão de Perdas)", "Taleb (Pequenos riscos frequentes)"],
+      "impactoJornada": "Mostra que pequenos vazamentos afundam grandes navios",
+      "prerequisitos": ["CK-01"],
+      "pontos": 120,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "CK-03",
+      "modulo": "checkup",
+      "nome": "Bets vs. Realidade (Simulação)",
+      "objetivo": "Demonstrar matematicamente a assimetria negativa das apostas esportivas/casinos online",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Simular (sem dinheiro real) que você tem R$ 100. Jogue uma moeda 10 vezes. Cara = ganha 50%, Coroa = perde 40%"},
+        {"tipo": "reflexao", "descricao": "Percebeu como perder dói mais do que ganhar recupera? (Conceito de Ruína)"},
+        {"tipo": "acao", "descricao": "Escrever uma regra pessoal sobre apostas no perfil"}
+      ],
+      "ferramenta": "Simulador de Bets do App (Moeda Virtual)",
+      "criteriosSucesso": ["Realizou a simulação de 10 rodadas", "Comparou o resultado final com o inicial", "Registrou a lição aprendida sobre risco"],
+      "modelosReferencia": ["Taleb (Assimetria Negativa, Ruína)", "Freud (Ilusão de onipotência)"],
+      "impactoJornada": "Imuniza contra a ilusão do dinheiro fácil e risco de ruína",
+      "prerequisitos": ["CK-01"],
+      "pontos": 150,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "CK-04",
+      "modulo": "checkup",
+      "nome": "Auditoria do Banco dos Pais",
+      "objetivo": "Entender a dependência financeira real e o custo de vida invisível",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Perguntar aos pais/responsáveis: Quanto custa minha internet, luz, comida e plano de saúde?"},
+        {"tipo": "reflexao", "descricao": "Quanto eu teria que ganhar hoje para me bancar sozinho?"},
+        {"tipo": "acao", "descricao": "Agradecer aos investidores (pais) por um item específico da lista"}
+      ],
+      "ferramenta": "Checklist de Custo de Vida",
+      "criteriosSucesso": ["Levantou valores de 3 categorias", "Somou o Custo-Eu mensal", "Realizou a ação de gratidão"],
+      "modelosReferencia": ["Piaget (Pensamento concreto -> abstrato)", "Kurt Lewin (Ambiente)"],
+      "impactoJornada": "Gera choque de realidade e valoriza os recursos familiares",
+      "prerequisitos": ["CK-02"],
+      "pontos": 130,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "CK-05",
+      "modulo": "checkup",
+      "nome": "O Custo do Hype (Anti-FOMO)",
+      "objetivo": "Identificar compras feitas apenas por pressão social ou medo de ficar de fora",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Identificar um objeto/roupa comprado porque geral estava usando"},
+        {"tipo": "reflexao", "descricao": "Você ainda usa isso? Se ninguém visse, você teria comprado?"},
+        {"tipo": "acao", "descricao": "Calcular quantas horas de mesada/trabalho custou esse item parado"}
+      ],
+      "ferramenta": "Conversor Preço-Tempo",
+      "criteriosSucesso": ["Identificou 1 item de Hype", "Respondeu honestamente sobre a utilidade", "Calculou o custo em tempo"],
+      "modelosReferencia": ["Freud (Pertencimento/Id)", "Taleb (Efeito Lindy)"],
+      "impactoJornada": "Fortalece o Ego contra a manipulação do marketing e amigos",
+      "prerequisitos": ["CK-01"],
+      "pontos": 140,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "CK-06",
+      "modulo": "checkup",
+      "nome": "Assinaturas Fantasmas",
+      "objetivo": "Encontrar serviços recorrentes que você paga (ou seus pais pagam) e não usa",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Listar todos os streamings, game pass, clubes, apps premium"},
+        {"tipo": "reflexao", "descricao": "Qual foi a última vez que usei cada um? (Regra: Não usou em 30 dias = Risco)"},
+        {"tipo": "acao", "descricao": "Cancelar ou pausar pelo menos uma assinatura inútil"}
+      ],
+      "ferramenta": "Painel de Recorrência",
+      "criteriosSucesso": ["Mapeou todas as assinaturas", "Identificou a frequência de uso", "Realizou o cancelamento/pausa de uma"],
+      "modelosReferencia": ["Via Negativa (Taleb)"],
+      "impactoJornada": "Libera fluxo de caixa eliminando o supérfluo automatizado",
+      "prerequisitos": ["CK-02"],
+      "pontos": 120,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "CK-07",
+      "modulo": "checkup",
+      "nome": "Teste de Estresse: O Celular Quebrado",
+      "objetivo": "Verificar a fragilidade do usuário diante de um imprevisto comum",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Imagine que seu celular quebrou HOJE. Quanto custa o conserto?"},
+        {"tipo": "reflexao", "descricao": "Você tem esse dinheiro? Teria que pedir e ouvir sermão? Ficaria sem?"},
+        {"tipo": "acao", "descricao": "Definir o valor exato que precisa ter guardado para essa tragédia"}
+      ],
+      "ferramenta": "Simulador de Crise",
+      "criteriosSucesso": ["Cotou o preço do reparo", "Verificou saldo atual disponível", "Definiu meta de reserva"],
+      "modelosReferencia": ["Taleb (Antifragilidade/Robustez)", "Falconi (Gerenciamento de Risco)"],
+      "impactoJornada": "Cria a necessidade real e urgente de ter uma reserva",
+      "prerequisitos": [],
+      "pontos": 150,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "CK-08",
+      "modulo": "checkup",
+      "nome": "Inventário do Tédio",
+      "objetivo": "Listar coisas compradas para matar o tempo que hoje são lixo",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Olhe seu quarto/inventário de jogos. Liste 3 coisas que comprou e largou em 1 semana"},
+        {"tipo": "reflexao", "descricao": "O problema era a falta do objeto ou o seu tédio interno?"},
+        {"tipo": "acao", "descricao": "Tirar uma foto desses itens e colocar na pasta Não Repetir"}
+      ],
+      "ferramenta": "Galeria da Vergonha (Upload de fotos)",
+      "criteriosSucesso": ["Listou 3 itens abandonados", "Refletiu sobre a motivação da compra", "Arquivou como lição aprendida"],
+      "modelosReferencia": ["Freud (Pulsão)", "Piaget (Acomodação de novo conhecimento)"],
+      "impactoJornada": "Gera consciência sobre compras emocionais ineficazes",
+      "prerequisitos": [],
+      "pontos": 110,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "CK-09",
+      "modulo": "checkup",
+      "nome": "A Verdade Familiar",
+      "objetivo": "Quebrar o tabu sobre dinheiro em casa e aprender com erros reais",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Perguntar para um responsável: Qual foi a pior decisão financeira que você já tomou?"},
+        {"tipo": "reflexao", "descricao": "Como isso afetou a família? O que eles aprenderam?"},
+        {"tipo": "acao", "descricao": "Registrar a lição principal para não repetir o erro (Genealogia do Erro)"}
+      ],
+      "ferramenta": "Gravador de Histórias / Bloco de Notas Seguro",
+      "criteriosSucesso": ["Realizou a entrevista", "Identificou o erro e a consequência", "Registrou o aprendizado"],
+      "modelosReferencia": ["Jung/Freud (Padrões familiares)", "Taleb (Aprendizado via dor/erro)"],
+      "impactoJornada": "Cria empatia e aprendizado vicário (aprender com erro do outro)",
+      "prerequisitos": ["CK-04"],
+      "pontos": 130,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "CK-10",
+      "modulo": "checkup",
+      "nome": "Seu Salário Secreto",
+      "objetivo": "Converter preço em esforço",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Calcule quanto você ganha por hora (mesada dividida por horas de estudo/tarefas)"},
+        {"tipo": "reflexao", "descricao": "Aquele lanche de R$ 40,00 vale 8 horas da sua vida?"},
+        {"tipo": "acao", "descricao": "Etiquetar mentalmente seu próximo desejo de compra em Horas de Vida"}
+      ],
+      "ferramenta": "Conversor Time is Money",
+      "criteriosSucesso": ["Calculou o valor da hora", "Converteu o preço de um desejo em horas", "Decidiu se compra ou não com a nova métrica"],
+      "modelosReferencia": ["Marx (Valor-trabalho adaptado)", "Falconi (Métricas)"],
+      "impactoJornada": "Muda a percepção de caro e barato para vale o esforço",
+      "prerequisitos": [],
+      "pontos": 140,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "RX-01",
+      "modulo": "raiox",
+      "nome": "Quem é Você na Fila do Pão? (Arquétipos)",
+      "objetivo": "Autoidentificação com os perfis de fragilidade/antifragilidade",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Ler os perfis (João Friável, Lucas Negador, Paula Teórica). Com quem você parece?"},
+        {"tipo": "reflexao", "descricao": "Em quais situações você age como o Lucas Negador (arriscando tudo)?"},
+        {"tipo": "acao", "descricao": "Selecionar seu Avatar inicial no App baseado no arquétipo atual"}
+      ],
+      "ferramenta": "Quiz de Arquétipos Talebianos",
+      "criteriosSucesso": ["Leu os 4 perfis", "Identificou o perfil dominante", "Selecionou o Avatar correspondente"],
+      "modelosReferencia": ["Taleb (Triade da Fragilidade)"],
+      "impactoJornada": "Define o ponto de partida comportamental da jornada",
+      "prerequisitos": [],
+      "pontos": 100,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "RX-02",
+      "modulo": "raiox",
+      "nome": "O Duelo: Id vs. Ego",
+      "objetivo": "Reconhecer a voz interna que pede gratificação imediata",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Na próxima vontade de gastar, dê um nome para a voz infantil (Id) e para a voz adulta (Ego)"},
+        {"tipo": "reflexao", "descricao": "Quem tem ganho as últimas batalhas? A criança birrenta ou o adulto estrategista?"},
+        {"tipo": "acao", "descricao": "Escrever um diálogo curto entre os dois sobre uma compra recente"}
+      ],
+      "ferramenta": "Chat do Eu Interior",
+      "criteriosSucesso": ["Identificou as duas vozes", "Analisou o histórico de vitórias", "Escreveu o diálogo de negociação"],
+      "modelosReferencia": ["Freud (Estrutura Psíquica)"],
+      "impactoJornada": "Desenvolve metacognição e autocontrole",
+      "prerequisitos": ["RX-01"],
+      "pontos": 120,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "RX-03",
+      "modulo": "raiox",
+      "nome": "Influencer vs. Realidade",
+      "objetivo": "Desconstruir a imagem de riqueza perfeita das redes sociais",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Escolha um influencer que ostenta. Pesquise: Como ele ganha dinheiro? É publi? É herança?"},
+        {"tipo": "reflexao", "descricao": "A vida mostrada nos stories é a vida inteira ou um recorte de 15 segundos?"},
+        {"tipo": "acao", "descricao": "Deixar de seguir (unfollow) ou silenciar 1 perfil que te faz sentir pobre ou insuficiente"}
+      ],
+      "ferramenta": "Filtro de Feed",
+      "criteriosSucesso": ["Analisou criticamente 1 perfil", "Identificou a fonte de renda real", "Realizou o detox (unfollow/mute)"],
+      "modelosReferencia": ["Festinger (Comparação Social)", "Freud (Ideal do Ego)"],
+      "impactoJornada": "Reduz a ansiedade e a necessidade de consumo por status",
+      "prerequisitos": ["CK-05"],
+      "pontos": 130,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "RX-04",
+      "modulo": "raiox",
+      "nome": "A Regra das 24 Horas (Treino)",
+      "objetivo": "Testar a força do músculo da paciência",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Encontrou algo legal > R$ 50,00? Ative o cronômetro"},
+        {"tipo": "reflexao", "descricao": "Como a vontade muda após uma noite de sono?"},
+        {"tipo": "acao", "descricao": "Voltar no app após 24h e marcar: Ainda quero ou Passou o Hype"}
+      ],
+      "ferramenta": "Cronômetro de Decisão (Timer)",
+      "criteriosSucesso": ["Ativou o timer em um desejo real", "Aguardou o tempo integral", "Registrou a decisão final"],
+      "modelosReferencia": ["Mischel (Teste do Marshmallow)", "Freud (Fortalecimento do Ego)"],
+      "impactoJornada": "Comprova biologicamente que o desejo impulsivo é passageiro",
+      "prerequisitos": ["RX-02"],
+      "pontos": 140,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "RX-05",
+      "modulo": "raiox",
+      "nome": "Genealogia Financeira",
+      "objetivo": "Entender de onde vêm as crenças sobre dinheiro (Escassez ou Abundância)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Perguntar aos avós ou tios mais velhos: Como era ganhar dinheiro na época de vocês?"},
+        {"tipo": "reflexao", "descricao": "Sua família é mais guardadora (medo) ou gastadora (prazer)?"},
+        {"tipo": "acao", "descricao": "Identificar uma frase sobre dinheiro que você ouve sempre em casa"}
+      ],
+      "ferramenta": "Árvore Genealógica de Crenças",
+      "criteriosSucesso": ["Entrevistou um familiar de outra geração", "Identificou o perfil familiar predominante", "Registrou uma crença limitante ou fortalecedora"],
+      "modelosReferencia": ["Transgeracionalidade", "Jung (Inconsciente Coletivo)"],
+      "impactoJornada": "Contextualiza o comportamento do usuário dentro da história familiar",
+      "prerequisitos": ["CK-09"],
+      "pontos": 150,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "RX-06",
+      "modulo": "raiox",
+      "nome": "O Viés do Já gastei tanto",
+      "objetivo": "Identificar a Falácia do Custo Irrecuperável (Sunk Cost) em jogos ou projetos",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Você continua jogando algo chato só porque já gastou dinheiro nele?"},
+        {"tipo": "reflexao", "descricao": "O dinheiro já foi. Continuar gastando tempo vai trazer o dinheiro de volta?"},
+        {"tipo": "acao", "descricao": "Dropar (abandonar) conscientemente algo que não traz mais alegria, sem culpa"}
+      ],
+      "ferramenta": "Calculadora de Perda Aceitável",
+      "criteriosSucesso": ["Identificou uma atividade mantida por Sunk Cost", "Refletiu sobre a perda de tempo adicional", "Tomou a decisão de parar ou continuar por prazer real"],
+      "modelosReferencia": ["Kahneman (Viéses Cognitivos)", "Taleb (Racionalidade)"],
+      "impactoJornada": "Ensina a estancar perdas e não jogar dinheiro bom em cima de dinheiro ruim",
+      "prerequisitos": [],
+      "pontos": 130,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "RX-07",
+      "modulo": "raiox",
+      "nome": "O Não aos Amigos",
+      "objetivo": "Treinar a assertividade social financeira",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Lembrar da última vez que gastou no rolê só para não ser o chato"},
+        {"tipo": "reflexao", "descricao": "Seus amigos gostam de você ou do que você gasta?"},
+        {"tipo": "acao", "descricao": "Usar uma Desculpa de Ouro sugerida pelo App para negar um gasto social esta semana"}
+      ],
+      "ferramenta": "Gerador de Desculpas Elegantes",
+      "criteriosSucesso": ["Identificou situação de pressão social", "Planejou uma resposta negativa", "Usou a resposta (simulação ou real)"],
+      "modelosReferencia": ["Assertividade", "Psicologia Social"],
+      "impactoJornada": "Fortalece a autonomia diante do grupo (Tribo)",
+      "prerequisitos": ["CK-05"],
+      "pontos": 140,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "RX-08",
+      "modulo": "raiox",
+      "nome": "O Espelho do Futuro (Visualização)",
+      "objetivo": "Conectar o Eu Presente com o Eu Futuro",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Como você quer estar financeiramente aos 25 anos? (Carro? Viajando? Morando só?)"},
+        {"tipo": "reflexao", "descricao": "O que você comprou hoje ajuda ou atrapalha esse cara de 25 anos?"},
+        {"tipo": "acao", "descricao": "Escrever uma carta curta (tweet) para o seu Eu do Futuro"}
+      ],
+      "ferramenta": "Cápsula do Tempo Digital",
+      "criteriosSucesso": ["Definiu uma visão clara de futuro", "Conectou hábito atual com meta futura", "Escreveu a mensagem"],
+      "modelosReferencia": ["Piaget (Pensamento Hipotético-Dedutivo)", "Neurociência (Empatia Temporal)"],
+      "impactoJornada": "Cria motivação intrínseca de longo prazo",
+      "prerequisitos": [],
+      "pontos": 120,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "RX-09",
+      "modulo": "raiox",
+      "nome": "Teste de Risco: O Aventureiro ou o Bunker?",
+      "objetivo": "Definir o perfil de investidor real (não o idealizado)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Se você perdesse 50% do seu dinheiro guardado hoje, você ficaria desesperado ou tranquilo?"},
+        {"tipo": "reflexao", "descricao": "Você prefere ganhar pouco sempre (CDB) ou tentar ganhar muito com chance de perder tudo (Crypto/Bet)?"},
+        {"tipo": "acao", "descricao": "Configurar o nível de risco no perfil do App"}
+      ],
+      "ferramenta": "Termômetro de Risco",
+      "criteriosSucesso": ["Respondeu ao cenário de perda", "Analisou a tolerância à volatilidade", "Definiu o perfil"],
+      "modelosReferencia": ["Kahneman (Aversão à Perda)"],
+      "impactoJornada": "Evita investimentos inadequados que geram pânico e venda na baixa",
+      "prerequisitos": ["RX-01"],
+      "pontos": 130,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "RX-10",
+      "modulo": "raiox",
+      "nome": "Check-up de Maturidade (Piaget)",
+      "objetivo": "Verificar se o pensamento financeiro já é abstrato (Juros Compostos)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Resolver o enigma: O que vale mais: R$ 100 hoje ou 1 centavo que dobra de valor todo dia por 30 dias?"},
+        {"tipo": "reflexao", "descricao": "Entender a mágica da exponencialidade"},
+        {"tipo": "acao", "descricao": "Assistir à explicação visual do enigma no App"}
+      ],
+      "ferramenta": "Quiz de Lógica Financeira",
+      "criteriosSucesso": ["Tentou resolver o enigma", "Acertou ou compreendeu o erro", "Entendeu o conceito de juros compostos"],
+      "modelosReferencia": ["Piaget (Operatório Formal)"],
+      "impactoJornada": "Valida a capacidade cognitiva para investimentos complexos",
+      "prerequisitos": [],
+      "pontos": 150,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "MT-01",
+      "modulo": "mapa",
+      "nome": "Contrato Comigo Mesmo",
+      "objetivo": "Formalizar o compromisso de mudança",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Escrever 3 regras inegociáveis (ex: Nunca gastar tudo o que ganho, Esperar 24h para compras caras)"},
+        {"tipo": "reflexao", "descricao": "Por que quebrar promessas consigo mesmo é tão fácil?"},
+        {"tipo": "acao", "descricao": "Assinar digitalmente o contrato no App e gerar um wallpaper"}
+      ],
+      "ferramenta": "Gerador de Contrato (PDF/Imagem)",
+      "criteriosSucesso": ["Definiu 3 regras claras", "Assinou o documento", "Salvou/Compartilhou como compromisso"],
+      "modelosReferencia": ["Pre-commitment (Economia Comportamental)", "Freud (Superego)"],
+      "impactoJornada": "Cria accountability (responsabilidade) interna",
+      "prerequisitos": [],
+      "pontos": 100,
+      "prazoSugerido": "3 dias"
+    },
+    {
+      "codigo": "MT-02",
+      "modulo": "mapa",
+      "nome": "Renda Extra no Caô (Empreendedorismo)",
+      "objetivo": "Quebrar a barreira de ganhar o primeiro dinheiro fora da mesada",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "O que você sabe fazer? (Desenhar, editar video, formatar PC, passear com cachorro)"},
+        {"tipo": "reflexao", "descricao": "Quem pagaria R$ 20,00 por isso?"},
+        {"tipo": "acao", "descricao": "Ofertar esse serviço para 3 conhecidos/parentes"}
+      ],
+      "ferramenta": "Catálogo de Ideias de Renda Rápida",
+      "criteriosSucesso": ["Identificou 1 habilidade", "Definiu um preço", "Fez a oferta real"],
+      "modelosReferencia": ["Taleb (Opcionalidade)"],
+      "impactoJornada": "Transforma o usuário de dependente para gerador de recursos",
+      "prerequisitos": ["MT-01"],
+      "pontos": 180,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "MT-03",
+      "modulo": "mapa",
+      "nome": "O Cofrinho Antifrágil (Estratégia Barbell)",
+      "objetivo": "Estruturar a divisão do dinheiro: Segurança Extrema vs. Risco Controlado",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Do dinheiro que você tem, separe 80% (Bunker) e 20% (Laboratório)"},
+        {"tipo": "reflexao", "descricao": "Os 20% você pode arriscar em algo novo. Os 80% ninguém toca."},
+        {"tipo": "acao", "descricao": "Criar as Caixinhas ou envelopes físicos/digitais com essa divisão"}
+      ],
+      "ferramenta": "Organizador de Potes/Caixinhas",
+      "criteriosSucesso": ["Calculou a divisão 80/20", "Criou os locais de guarda separados", "Alocou o primeiro valor"],
+      "modelosReferencia": ["Taleb (Estratégia Barbell/Haltere)"],
+      "impactoJornada": "Garante sobrevivência (80%) enquanto permite aprendizado arriscado (20%)",
+      "prerequisitos": ["MT-02"],
+      "pontos": 160,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "MT-04",
+      "modulo": "mapa",
+      "nome": "Desafio do Desapego (Via Negativa)",
+      "objetivo": "Gerar caixa rápido vendendo o que não usa",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Encontre 1 item no quarto que vale mais de R$ 30,00 e não é usado há 6 meses"},
+        {"tipo": "reflexao", "descricao": "O objeto parado é dinheiro morto perdendo valor"},
+        {"tipo": "acao", "descricao": "Anunciar em site de venda, grupo da escola ou brechó"}
+      ],
+      "ferramenta": "Guia de Anúncio Perfeito (Foto + Descrição)",
+      "criteriosSucesso": ["Selecionou o item", "Pesquisou o preço de mercado", "Publicou o anúncio"],
+      "modelosReferencia": ["Via Negativa (Tirar coisas)", "Opcionalidade"],
+      "impactoJornada": "Transforma passivo (entulho) em ativo (caixa)",
+      "prerequisitos": [],
+      "pontos": 150,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "MT-05",
+      "modulo": "mapa",
+      "nome": "O Orçamento dos Sonhos (Gamificado)",
+      "objetivo": "Planejar uma compra grande (Celular, Viagem, Console)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Qual o Sonho? Quanto custa? Quando você quer?"},
+        {"tipo": "reflexao", "descricao": "Quanto precisa guardar por semana para chegar lá? É possível?"},
+        {"tipo": "acao", "descricao": "Criar a Barra de Progresso do sonho no App"}
+      ],
+      "ferramenta": "Calculadora de Sonhos (Meta SMART)",
+      "criteriosSucesso": ["Definiu o sonho e valor", "Calculou a parcela semanal/mensal", "Iniciou o monitoramento visual"],
+      "modelosReferencia": ["Falconi (Metas)", "Locke (Teoria de Definição de Metas)"],
+      "impactoJornada": "Transforma desejo vago em plano executável",
+      "prerequisitos": ["MT-03"],
+      "pontos": 170,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "MT-06",
+      "modulo": "mapa",
+      "nome": "O Hacker de Promoções",
+      "objetivo": "Aprender a técnica de monitorar preços antes de comprar",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Escolha um item que quer comprar"},
+        {"tipo": "reflexao", "descricao": "O preço atual é o melhor dos últimos 6 meses?"},
+        {"tipo": "acao", "descricao": "Usar um comparador de preços (Zoom/Buscapé) e criar um alerta de preço"}
+      ],
+      "ferramenta": "Comparador de Histórico de Preço",
+      "criteriosSucesso": ["Consultou o histórico de preço", "Definiu o Preço Alvo para compra", "Configurou o alerta"],
+      "modelosReferencia": ["Racionalidade Limitada (superar via dados)"],
+      "impactoJornada": "Maximiza o poder de compra e evita pegadinhas de desconto falso",
+      "prerequisitos": [],
+      "pontos": 130,
+      "prazoSugerido": "5 dias"
+    },
+    {
+      "codigo": "MT-07",
+      "modulo": "mapa",
+      "nome": "Networking Jovem: A Entrevista",
+      "objetivo": "Entender como pessoas reais ganham dinheiro na área que você gosta",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Escolha uma profissão que acha legal"},
+        {"tipo": "reflexao", "descricao": "A realidade é igual ao TikTok?"},
+        {"tipo": "acao", "descricao": "Mandar DM ou conversar com alguém que trabalha nisso perguntando: O que ninguém conta sobre seu trabalho?"}
+      ],
+      "ferramenta": "Scripts de Abordagem Respeitosa",
+      "criteriosSucesso": ["Identificou o profissional", "Enviou a pergunta", "Registrou a resposta (Realidade vs Expectativa)"],
+      "modelosReferencia": ["Aprendizagem Social (Bandura)"],
+      "impactoJornada": "Valida escolhas de carreira futuras e abre portas (Opcionalidade)",
+      "prerequisitos": ["RX-03"],
+      "pontos": 160,
+      "prazoSugerido": "10 dias"
+    },
+    {
+      "codigo": "MT-08",
+      "modulo": "mapa",
+      "nome": "Desafio da Semana Grátis",
+      "objetivo": "Provar que é possível se divertir sem gastar (Antifragilidade Social)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Planejar um rolê com amigos custo zero (parque, filme em casa, jogar online)"},
+        {"tipo": "reflexao", "descricao": "A diversão diminuiu porque não gastou dinheiro?"},
+        {"tipo": "acao", "descricao": "Executar o plano e postar foto com a tag #Diversao0800"}
+      ],
+      "ferramenta": "Guia de Rolês Gratuitos na Cidade",
+      "criteriosSucesso": ["Planejou a atividade", "Executou com custo zero (ou próximo)", "Validou a qualidade da experiência"],
+      "modelosReferencia": ["Estoicismo (Seneca)", "Via Negativa"],
+      "impactoJornada": "Quebra a associação mental Felicidade = Consumo",
+      "prerequisitos": ["CK-05"],
+      "pontos": 140,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "MT-09",
+      "modulo": "mapa",
+      "nome": "A Regra 50/30/20 Remix",
+      "objetivo": "Adaptar a regra clássica para a realidade teen (sem contas de luz)",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Pegue sua renda total"},
+        {"tipo": "reflexao", "descricao": "Nova divisão: 50% para Role/Games (Curto prazo), 30% para Sonho Grande (Médio prazo), 20% para Nunca Tocar (Longo prazo)"},
+        {"tipo": "acao", "descricao": "Aplicar essa divisão na próxima mesada/ganho"}
+      ],
+      "ferramenta": "Calculadora de Partilha",
+      "criteriosSucesso": ["Entendeu a lógica adaptada", "Calculou os valores baseados na renda atual", "Comprometeu-se a testar por 1 mês"],
+      "modelosReferencia": ["Falconi (Padronização de Processos)"],
+      "impactoJornada": "Cria hábito de distribuição automática de recursos",
+      "prerequisitos": ["MT-03"],
+      "pontos": 150,
+      "prazoSugerido": "7 dias"
+    },
+    {
+      "codigo": "MT-10",
+      "modulo": "mapa",
+      "nome": "O Plano de Conquista Final (Roadmap)",
+      "objetivo": "Consolidar tudo num plano de 12 meses",
+      "tarefas": [
+        {"tipo": "registro", "descricao": "Onde você estará daqui a 1 ano (financeiramente)?"},
+        {"tipo": "reflexao", "descricao": "Quais atividades anteriores você vai manter como rotina?"},
+        {"tipo": "acao", "descricao": "Preencher o Calendário de Conquistas com 1 meta por mês"}
+      ],
+      "ferramenta": "Roadmap Visual Gamificado",
+      "criteriosSucesso": ["Revisou as atividades anteriores", "Definiu 12 marcos mensais", "Salvou o Roadmap"],
+      "modelosReferencia": ["PDCA (Planejar-Fazer-Checar-Agir)", "Taleb (Evolução contínua)"],
+      "impactoJornada": "Encerra o ciclo inicial e inicia a jornada autônoma Antifrágil",
+      "prerequisitos": [],
+      "pontos": 200,
+      "prazoSugerido": "10 dias"
+    }
+  ]
+}
