@@ -1,17 +1,18 @@
 import { PrismaClient } from '@prisma/client';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Iniciando o Seed...');
 
-  // 1. Limpar dados para evitar duplicatas
-  await prisma.completedActivity.deleteMany({});
-  await prisma.activity.deleteMany({});
-  await prisma.stressorAgent.deleteMany({});
-  await prisma.badge.deleteMany({});
+  // --- Ler JSON de atividades (assume prisma/BANCO_ATIVIDADES_TEENS.json) ---
+  const jsonPath = join(process.cwd(), 'prisma', 'BANCO_ATIVIDADES_TEENS.json');
+  const raw = readFileSync(jsonPath, 'utf-8');
+  const db = JSON.parse(raw);
 
-  // 2. Criar os 12 Agentes Estressores
+  // --- 1) Agentes Estressores (upsert para serem idempotentes) ---
   const stressores = [
     { name: 'Ansiedade do Agora', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
     { name: 'Pressão do Grupo', description: 'Gastar para se sentir aceito pelos amigos.' },
@@ -28,55 +29,87 @@ async function main() {
   ];
 
   for (const s of stressores) {
-    await prisma.stressorAgent.create({ data: s });
+    await prisma.stressorAgent.upsert({
+      where: { name: s.name },
+      update: { description: s.description },
+      create: s,
+    });
   }
-  console.log('✅ 12 Agentes Estressores criados.');
+  console.log('✅ Agentes estressores criados/atualizados.');
 
-  // 3. Atividades (Dados do seu JSON)
-  const atividades = [
-    // Aqui você deve colar a lista de atividades do seu JSON. 
-    // Vou colocar as primeiras como exemplo, você pode completar com as 30.
-    {
-      code: "CK-01",
-      module: "checkup",
-      title: "O Detector de Glitches Emocionais",
-      objective: "Mapear quais sentimentos disparam gastos impulsivos",
-      xpReward: 100,
-      duration: "3 dias",
-      tasks: ["Anotar 3 gastos", "Reflexão 10 min", "Nomear vilão"]
-    },
-    // ... adicione as outras 29 aqui seguindo o mesmo padrão
-  ];
+  // --- 2) Atividades (upsert por código) ---
+  const atividades = (db.atividades || []).map((a: any) => ({
+    code: a.codigo,
+    module: a.modulo,
+    title: a.nome,
+    objective: a.objetivo,
+    xpReward: a.pontos ?? 0,
+    duration: a.prazoSugerido ?? a.duracao ?? null,
+    prerequisites: a.prerequisitos ?? [],
+    tools: a.ferramenta ?? null,
+    successCriteria: a.criteriosSucesso ?? [],
+    models: a.modelosReferencia ?? [],
+    impact: a.impactoJornada ?? null,
+    // Armazenamos tarefas como JSON (array de objetos)
+    tasks: a.tarefas ?? [],
+  }));
 
   for (const act of atividades) {
-    await prisma.activity.create({ data: act });
+    await prisma.activity.upsert({
+      where: { code: act.code },
+      update: {
+        module: act.module,
+        title: act.title,
+        objective: act.objective,
+        xpReward: act.xpReward,
+        duration: act.duration,
+        prerequisites: act.prerequisites,
+        tools: act.tools,
+        successCriteria: act.successCriteria,
+        models: act.models,
+        impact: act.impact,
+        tasks: act.tasks,
+      },
+      create: act,
+    });
   }
-  console.log(`✅ ${atividades.length} Atividades criadas.`);
+  console.log(`✅ ${atividades.length} atividades criadas/atualizadas.`);
 
-  // 4. Badges
-  await prisma.badge.createMany({
-    data: [
-      { name: 'Primeiros Passos', description: 'Iniciou a jornada.', icon: 'seedling' },
-      { name: 'Mestre do Poupar', description: 'Economizou o primeiro real.', icon: 'piggy-bank' },
-    ]
-  });
+  // --- 3) Badges iniciais (upsert) ---
+  const badges = [
+    { name: 'Primeiros Passos', description: 'Iniciou a jornada.', icon: 'seedling' },
+    { name: 'Mestre do Poupar', description: 'Economizou o primeiro real.', icon: 'piggy-bank' },
+    { name: 'Antifrágil', description: 'Superou um teste de estresse financeiro.', icon: 'shield' },
+  ];
 
-  // 5. Admin
+  for (const b of badges) {
+    await prisma.badge.upsert({
+      where: { name: b.name },
+      update: b,
+      create: b,
+    });
+  }
+  console.log('✅ Badges criadas/atualizadas.');
+
+  // --- 4) Usuário Admin (upsert) ---
   await prisma.user.upsert({
     where: { email: 'marcelo.egito@gmail.com' },
-    update: {},
+    update: { name: 'Marcelo Admin' },
     create: {
       email: 'marcelo.egito@gmail.com',
       name: 'Marcelo Admin',
+      // adicione campos obrigatórios do seu schema caso existam (ex: role)
+      // role: 'ADMIN',
     },
   });
+  console.log('✅ Admin criado/atualizado.');
 
-  console.log('🚀 Seed finalizado!');
+  console.log('🚀 Seed finalizado com sucesso!');
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('Erro no seed:', e);
     process.exit(1);
   })
   .finally(async () => {
