@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma migrate deploy && next build --no-lintt",
+    "build": "prisma migrate deploy && next build --no-lint",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
     "postinstall": "prisma generate",
-  "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js"
   },
   "dependencies": {
     "next": "14.2.0",
