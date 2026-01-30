@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": ": "prisma generate && npx prisma db seed && next build --no-lint",
+    "build": "prisma generate && npx prisma db seed && next build --no-lint",
     "postinstall": "prisma generate"
   },
   "dependencies": {
