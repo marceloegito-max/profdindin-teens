@@ -37,6 +37,6 @@
     "eslint-config-next": "14.2.0"
   },
   "prisma": {
-    "seed": "ts-node --swc --transpile-only prisma/seed.ts"
+    "seed": "ts-node --transpile-only prisma/seed.ts"
   }
 }
