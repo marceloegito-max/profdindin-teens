@@ -49,7 +49,7 @@ export async function GET() {
         },
         create: {
           code: a.codigo,
-          module: a.modulo,
+          module: a.modulo.toUpperCase().replace('-', '_'),
           name: a.nome,
           objective: a.objetivo,
           tasks: a.tarefas,
