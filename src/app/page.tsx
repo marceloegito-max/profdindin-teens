@@ -1,22 +1,10 @@
-export default function Home() {
+export default function DashboardPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-gradient-to-br from-purple-500 to-pink-500">
-      <div className="text-center text-white">
-        <h1 className="text-6xl font-bold mb-4">
-          🎯 Professor Dindin Teens
-        </h1>
-        <p className="text-2xl mb-8">
-          Educação Financeira Gamificada para Adolescentes
-        </p>
-        <div className="bg-white/20 backdrop-blur-lg rounded-lg p-8 max-w-2xl">
-          <p className="text-lg mb-4">
-            ✅ Projeto configurado com sucesso!
-          </p>
-          <p className="text-sm">
-            Em breve: Dashboard, Atividades, Badges e muito mais!
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold mb-4">🎉 Bem-vindo ao Dashboard!</h1>
+        <p className="text-slate-400">Seu perfil foi criado com sucesso.</p>
       </div>
-    </main>
-  )
+    </div>
+  );
 }
