@@ -19,3 +19,6 @@ yarn-error.log*
 .DS_Store
 *.pem
 .abacus.donotdelete
+
+# Backups do Supabase (não commitar)
+backups/

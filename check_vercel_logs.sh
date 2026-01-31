@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "📊 Para verificar logs da Vercel:"
+echo ""
+echo "1. Acesse: https://vercel.com/dashboard"
+echo "2. Selecione o projeto: profdindin-teens"
+echo "3. Vá em 'Deployments'"
+echo "4. Clique no último deployment"
+echo "5. Vá na aba 'Runtime Logs' ou 'Build Logs'"
+echo ""
+echo "🔍 Ou use a CLI da Vercel:"
+echo "   vercel logs profdindin-teens --follow"
+echo ""
+echo "✅ Aplicação está acessível em: https://profdindin-teens.vercel.app"
