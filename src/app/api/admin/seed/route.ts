@@ -3,15 +3,9 @@ import { PrismaClient } from '@prisma/client';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-// Singleton pattern para Prisma Client
+// Singleton pattern para Prisma Client (Evita erro de Prepared Statement)
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ['error'],
-  });
-
+const prisma = globalForPrisma.prisma || new PrismaClient();
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 export async function GET() {
@@ -20,7 +14,7 @@ export async function GET() {
     const raw = readFileSync(jsonPath, 'utf-8');
     const db = JSON.parse(raw);
 
-    // Agentes estressores
+    // 1. Agentes estressores
     const stressores = [
       { name: 'Ansiedade do Agora', icon: 'clock', category: 'emocional', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
       { name: 'Pressão do Grupo', icon: 'users', category: 'social', description: 'Gastar para se sentir aceito pelos amigos.' },
@@ -48,17 +42,28 @@ export async function GET() {
       });
     }
 
-    // Atividades
+    // 2. Mapeamento de Módulos para o Enum do Prisma
+    const moduleMapping: Record<string, any> = {
+      'checkup': 'CHECKUP',
+      'raio-x': 'RAIO_X',
+      'raiox': 'RAIO_X',
+      'mapa-tesouro': 'MAPA_TESOURO'
+    };
+
+    // 3. Atividades
     for (const a of db.atividades) {
+      const prismaModule = moduleMapping[a.modulo.toLowerCase()] || 'CHECKUP';
+
       await prisma.activity.upsert({
         where: { code: a.codigo },
         update: {
           name: a.nome,
           points: a.pontos,
+          module: prismaModule,
         },
         create: {
           code: a.codigo,
-          module: a.modulo.toUpperCase().replace('-', '_'),
+          module: prismaModule,
           name: a.nome,
           objective: a.objetivo,
           tasks: a.tarefas,
@@ -76,11 +81,14 @@ export async function GET() {
 
     return NextResponse.json({
       ok: true,
-      message: '✅ Seed executado com sucesso',
-      atividades: db.atividades.length,
-      stressores: stressores.length,
+      message: '✅ Seed executado com sucesso!',
+      detalhes: {
+        atividades: db.atividades.length,
+        stressores: stressores.length,
+      }
     });
   } catch (error: any) {
+    console.error('Erro no Seed:', error);
     return NextResponse.json(
       { ok: false, error: error.message },
       { status: 500 }
