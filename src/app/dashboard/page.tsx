@@ -15,28 +15,39 @@ export default function DashboardPage() {
   const [latestISJF, setLatestISJF] = useState<any>(null);
   const [dailyMissions, setDailyMissions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setTimeout(() => {
-      setUserProgress({
-        xp: 850,
-        level: 3,
-        currentStreak: 5,
-        longestStreak: 12,
-        totalActivitiesCompleted: 8,
-      });
-      setLatestISJF({
-        indiceISJF: 1.35,
-        classificacao: 'Resiliente',
-      });
-      setDailyMissions([
-        { id: 1, title: 'Complete uma atividade', progress: 0, target: 1, reward: 50, icon: '✅' },
-        { id: 2, title: 'Ganhe 100 XP', progress: 50, target: 100, reward: 75, icon: '⭐' },
-        { id: 3, title: 'Mantenha o streak', progress: 5, target: 7, reward: 100, icon: '🔥' },
-      ]);
-      setLoading(false);
-    }, 500);
-  }, []);
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/dashboard');
+        
+        if (!response.ok) {
+          throw new Error('Erro ao carregar dados do dashboard');
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          setUserProgress(result.data.userProgress);
+          setLatestISJF(result.data.latestISJF);
+          setDailyMissions(result.data.dailyMissions);
+        } else {
+          throw new Error('Formato de resposta inválido');
+        }
+      } catch (err: any) {
+        console.error('Erro ao buscar dados:', err);
+        setError(err.message || 'Erro ao carregar dados');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session?.user) {
+      fetchDashboardData();
+    }
+  }, [session]);
 
   if (loading) {
     return (
@@ -48,7 +59,43 @@ export default function DashboardPage() {
     );
   }
 
-  const xpForNextLevel = userProgress.level * 500;
+  if (error) {
+    return (
+      <TeenLayout>
+        <div className="flex items-center justify-center h-screen">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CardTitle>⚠️ Erro ao Carregar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <Button onClick={() => window.location.reload()}>Tentar Novamente</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </TeenLayout>
+    );
+  }
+
+  if (!userProgress) {
+    return (
+      <TeenLayout>
+        <div className="flex items-center justify-center h-screen">
+          <Card className="max-w-md">
+            <CardHeader>
+              <CardTitle>🚀 Iniciando sua jornada...</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">Estamos preparando seu perfil!</p>
+              <Button onClick={() => window.location.reload()}>Recarregar</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </TeenLayout>
+    );
+  }
+
+  const xpForNextLevel = userProgress.xpForNextLevel || userProgress.level * 500;
 
   return (
     <TeenLayout>
