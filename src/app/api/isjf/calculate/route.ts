@@ -1,118 +1,123 @@
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { calcularISJF, type RespostaObjetivo } from '@/lib/calculo-isjf';
+import { getServerSession } from 'next-auth';
 
 const prisma = new PrismaClient();
 
-function mean(nums: number[]) {
-  if (!nums.length) return 0;
-  return nums.reduce((a, b) => a + b, 0) / nums.length;
-}
-
-function clamp(n: number, min = 0, max = 125) {
-  return Math.max(min, Math.min(max, n));
-}
-
 /**
- * IER = 125 - ((GI*GD*FRG)/10)
- * IRB360 = (GI*GD*FRG)*5
+ * POST /api/isjf/calculate
+ * Calcula o ISJF completo a partir das 22 respostas do Mapa do Tesouro
+ * 
+ * Body:
+ * {
+ *   userId?: string,  // Opcional se autenticado
+ *   respostas: RespostaObjetivo[]  // Array com 22 respostas
+ * }
  */
-function calcIER(gi: number, gd: number, frg: number) {
-  return clamp(125 - (gi * gd * frg) / 10);
-}
-
-function calcIRB360(gi: number, gd: number, frg: number) {
-  return gi * gd * frg * 5;
-}
-
 export async function POST(req: Request) {
   try {
-    const body = await req.json().catch(() => ({}));
-    const userId = body?.userId as string | undefined;
+    const body = await req.json();
+    const { userId: bodyUserId, respostas } = body;
 
-    if (!userId) {
+    // Validar respostas
+    if (!respostas || !Array.isArray(respostas)) {
       return NextResponse.json(
-        { error: "userId é obrigatório" },
+        { error: 'Campo "respostas" é obrigatório e deve ser um array' },
         { status: 400 }
       );
     }
 
-    // Busca avaliações + objetivo para saber o determinante
-    const assessments = await prisma.controlAssessment.findMany({
-      where: { userId },
-      include: { objective: true },
-    });
-
-    if (!assessments.length) {
+    if (respostas.length !== 22) {
       return NextResponse.json(
-        { error: "Nenhuma avaliação encontrada para este usuário." },
-        { status: 404 }
+        { error: `Esperado 22 respostas, recebido ${respostas.length}` },
+        { status: 400 }
       );
     }
 
-    // Recalcula IER/IRB360 (e opcionalmente atualiza no banco)
-    const enriched = assessments.map((a) => {
-      const ier = calcIER(a.gi, a.gd, a.frg);
-      const irb360 = calcIRB360(a.gi, a.gd, a.frg);
-      return { ...a, ier, irb360 };
-    });
+    // Obter userId (de autenticação ou body)
+    const session = await getServerSession();
+    const userId = bodyUserId || (session?.user as any)?.id;
 
-    // Agrupar por determinante (GAR, HAB, REC, RI)
-    const byDet = {
-      GAR: enriched.filter((a) => a.objective.determinant === "GAR").map((a) => a.ier),
-      HAB: enriched.filter((a) => a.objective.determinant === "HAB").map((a) => a.ier),
-      REC: enriched.filter((a) => a.objective.determinant === "REC").map((a) => a.ier),
-      RI: enriched.filter((a) => a.objective.determinant === "RI").map((a) => a.ier),
-    };
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'userId é obrigatório (autenticação ou body)' },
+        { status: 401 }
+      );
+    }
 
-    const gar = mean(byDet.GAR);
-    const hab = mean(byDet.HAB);
-    const rec = mean(byDet.REC);
-    const ri = mean(byDet.RI);
+    // 🚀 CALCULAR ISJF COMPLETO
+    const resultado = calcularISJF(respostas as RespostaObjetivo[]);
 
-    // ISJF final (média simples dos 4 determinantes)
-    const isjfValue = mean([gar, hab, rec, ri]);
-
-    // (Opcional) salvar valores recalculados em ControlAssessment
-    // Se você quiser manter sempre coerente, faça updateMany individual
-    await prisma.$transaction(
-      enriched.map((a) =>
-        prisma.controlAssessment.update({
-          where: { id: a.id },
-          data: { ier: a.ier, irb360: a.irb360 },
-        })
-      )
-    );
-
-    // Salvar histórico ISJF
+    // Salvar no histórico
     const history = await prisma.iSJFHistory.create({
       data: {
         userId,
-        isjfValue,
-        gar,
-        hab,
-        rec,
-        ri,
+        indiceISJF: resultado.isjf,
+        classificacao: resultado.classificacao,
+        determinantes: {
+          GAR: resultado.determinantes.GAR,
+          HAB: resultado.determinantes.HAB,
+          REC: resultado.determinantes.REC,
+          RI: resultado.determinantes.RI,
+          OP: resultado.determinantes.OP,
+          UTIL: resultado.determinantes.UTIL,
+        },
+        variaveis: {
+          M1: resultado.variaveis.M1,
+          M2: resultado.variaveis.M2,
+          M3: resultado.variaveis.M3,
+          M4: resultado.variaveis.M4,
+        },
+        objetivos: resultado.objetivos.map(obj => ({
+          id: obj.id,
+          sigla: obj.sigla,
+          ier: obj.ier,
+          irb360: obj.irb360,
+          tipo: obj.tipo,
+        })),
+      },
+    });
 
-        // Campos extras no schema (op/util/m1..m4) — se ainda não usa, salva 0
-        op: 0,
-        util: 0,
-        m1: 0,
-        m2: 0,
-        m3: 0,
-        m4: 0,
+    // Atualizar JornadaFinanceira com último ISJF
+    await prisma.jornadaFinanceira.upsert({
+      where: { userId },
+      update: {
+        ultimoISJF: resultado.isjf,
+        classificacaoAtual: resultado.classificacao,
+        ultimaAtualizacao: new Date(),
+      },
+      create: {
+        userId,
+        ultimoISJF: resultado.isjf,
+        classificacaoAtual: resultado.classificacao,
       },
     });
 
     return NextResponse.json({
-      userId,
-      isjfValue,
-      determinants: { gar, hab, rec, ri },
+      success: true,
+      isjf: resultado.isjf,
+      classificacao: resultado.classificacao,
+      determinantes: resultado.determinantes,
+      variaveis: resultado.variaveis,
+      restrictores: resultado.restrictores.map(r => ({
+        id: r.id,
+        sigla: r.sigla,
+        assunto: r.assunto,
+        ier: r.ier,
+      })),
+      facilitadores: resultado.facilitadores.map(f => ({
+        id: f.id,
+        sigla: f.sigla,
+        assunto: f.assunto,
+        ier: f.ier,
+      })),
       historyId: history.id,
     });
   } catch (err: any) {
-    console.error(err);
+    console.error('Erro ao calcular ISJF:', err);
     return NextResponse.json(
-      { error: "Erro ao calcular ISJF", details: String(err?.message ?? err) },
+      { error: 'Erro ao calcular ISJF', details: err.message },
       { status: 500 }
     );
   }

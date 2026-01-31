@@ -4,12 +4,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url      = env("DATABASE_URL")
 }
+
+// ==================== ENUMS ====================
 
 enum UserRole {
   TEEN
+  PROFESSOR
+  RESPONSIBLE
   ADMIN
 }
 
@@ -17,6 +20,7 @@ enum IncomeSource {
   MESADA
   TRABALHO
   FREELANCE
+  BICO
   NENHUM
 }
 
@@ -40,14 +44,14 @@ enum ActivityModule {
 }
 
 enum CoreDrive {
-  EPIC_MEANING
-  DEVELOPMENT
-  EMPOWERMENT
-  OWNERSHIP
-  SOCIAL_INFLUENCE
-  SCARCITY
-  UNPREDICTABILITY
-  AVOIDANCE
+  EPIC_MEANING      // Significado Épico
+  DEVELOPMENT       // Desenvolvimento & Conquista
+  EMPOWERMENT       // Empoderamento & Feedback
+  OWNERSHIP         // Posse & Propriedade
+  SOCIAL_INFLUENCE  // Influência Social
+  SCARCITY          // Escassez & Impaciência
+  UNPREDICTABILITY  // Imprevisibilidade
+  AVOIDANCE         // Perda & Prevenção
 }
 
 enum MissionType {
@@ -55,7 +59,10 @@ enum MissionType {
   EARN_XP
   MAINTAIN_STREAK
   UNLOCK_BADGES
+  TAKE_TESTS
 }
+
+// ==================== AUTH & USER ====================
 
 model User {
   id            String    @id @default(cuid())
@@ -65,9 +72,28 @@ model User {
   image         String?
   passwordHash  String?
   role          UserRole  @default(TEEN)
+  
+  // Segurança e Controle de Acesso
+  isBlocked     Boolean   @default(false)
+  blockedAt     DateTime?
+  blockedReason String?
+  
+  // Recuperação de Senha
+  perguntaSeguranca   String?
+  respostaSeguranca   String?
+  codigosBackup       Json?
+  codigosBackupUsados Json?
+  ultimaRecuperacao   DateTime?
+  
+  // Consentimento LGPD (adaptado para teens e responsáveis)
+  consentimentoLGPD   Boolean   @default(false)
+  dataConsentimento   DateTime?
+  ipConsentimento     String?
+  
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // Relações
   accounts              Account[]
   sessions              Session[]
   teenProfile           TeenProfile?
@@ -77,6 +103,21 @@ model User {
   streaks               Streak[]
   stressorAssessments   StressorAssessment[]
   completedMissions     CompletedMission[]
+  checkupTests          CheckupTest[]
+  raioXTests            RaioXTest[]
+  mapaTests             MapaTesouroTest[]
+  atividadesProgresso   AtividadeProgresso[]
+  notificacoes          Notificacao[]
+  jornadaFinanceira     JornadaFinanceira?
+  eventosJornada        EventoJornada[]
+  
+  // Relacionamentos específicos para Teens
+  responsaveis          TeenResponsible[] @relation("TeenToResponsible")
+  teensResponsavel      TeenResponsible[] @relation("ResponsibleToTeen")
+  classesProfessor      ProfessorClass[] @relation("ProfessorToClass")
+  teenClasses           TeenClass[]
+  mensagensEnviadas     Message[] @relation("MessageSender")
+  mensagensRecebidas    Message[] @relation("MessageReceiver")
 
   @@map("users")
 }
@@ -120,6 +161,8 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+// ==================== PERFIL & PROGRESSO ====================
+
 model TeenProfile {
   id                String        @id @default(cuid())
   userId            String        @unique
@@ -132,6 +175,12 @@ model TeenProfile {
   hasDebt           Boolean       @default(false)
   hasSavings        Boolean       @default(false)
   hasInvestments    Boolean       @default(false)
+  
+  // Campos adicionais para contexto teen
+  cidade            String?
+  escola            String?
+  serieAno          String?
+  
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -148,6 +197,13 @@ model UserProgress {
   currentStreak  Int      @default(0)
   longestStreak  Int      @default(0)
   lastActiveDate DateTime?
+  
+  // Estatísticas de progresso
+  totalActivitiesCompleted Int @default(0)
+  totalCheckups            Int @default(0)
+  totalRaioX               Int @default(0)
+  totalMapasTesouro        Int @default(0)
+  
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -156,6 +212,8 @@ model UserProgress {
   @@map("user_progress")
 }
 
+// ==================== GAMIFICAÇÃO ====================
+
 model Badge {
   id             String      @id @default(cuid())
   name           String      @unique
@@ -163,6 +221,7 @@ model Badge {
   icon           String
   criteria       String
   requiredValue  Int
+  coreDrive      CoreDrive?  // Core Drive associado
   createdAt      DateTime    @default(now())
 
   userBadges UserBadge[]
@@ -195,72 +254,6 @@ model Streak {
   @@map("streaks")
 }
 
-model Activity {
-  id                String         @id @default(cuid())
-  code              String         @unique
-  module            ActivityModule
-  name              String
-  objective         String
-  tasks             Json
-  tools             Json
-  successCriteria   Json
-  referenceModels   Json
-  impact            String
-  points            Int
-  suggestedDuration String
-  prerequisites     String[]
-  coreDrives        CoreDrive[]
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-
-  completedActivities CompletedActivity[]
-
-  @@map("activities")
-}
-
-model CompletedActivity {
-  id          String   @id @default(cuid())
-  userId      String
-  activityId  String
-  completedAt DateTime @default(now())
-  pointsEarned Int
-  responses   Json?
-
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, activityId])
-  @@map("completed_activities")
-}
-
-model StressorAgent {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String
-  icon        String
-  category    String
-  createdAt   DateTime @default(now())
-
-  assessments StressorAssessment[]
-
-  @@map("stressor_agents")
-}
-
-model StressorAssessment {
-  id          String   @id @default(cuid())
-  userId      String
-  stressorId  String
-  impactLevel Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  stressor StressorAgent  @relation(fields: [stressorId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, stressorId])
-  @@map("stressor_assessments")
-}
-
 model DailyMission {
   id          String      @id @default(cuid())
   title       String
@@ -289,4 +282,530 @@ model CompletedMission {
 
   @@unique([userId, missionId])
   @@map("completed_missions")
+}
+
+// ==================== ATIVIDADES ====================
+
+model Activity {
+  id                String         @id @default(cuid())
+  code              String         @unique
+  module            ActivityModule
+  name              String
+  objective         String
+  tasks             Json
+  tools             Json
+  successCriteria   Json
+  referenceModels   Json
+  impact            String
+  points            Int
+  suggestedDuration String
+  prerequisites     String[]
+  coreDrives        CoreDrive[]
+  
+  // Adaptação para teens
+  linguagemTeen     Boolean        @default(true)
+  exemplosTeen      Json?
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  completedActivities CompletedActivity[]
+
+  @@map("activities")
+}
+
+model CompletedActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  activityId  String
+  completedAt DateTime @default(now())
+  pointsEarned Int
+  responses   Json?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, activityId])
+  @@map("completed_activities")
+}
+
+model AtividadeProgresso {
+  id              String   @id @default(cuid())
+  userId          String
+  codigoAtividade String
+  modulo          String
+  
+  status          String   @default("nao_iniciada")
+  percentualConcluido Float @default(0)
+  tarefasConcluidas Json   @default("[]")
+  reflexoes       Json     @default("{}")
+  
+  aprendizados    String?  @db.Text
+  dificuldades    String?  @db.Text
+  melhorias       String?  @db.Text
+  notaAutoavaliacao Int?
+  
+  fotoUrl         String?
+  dataInicio      DateTime?
+  dataConclusao   DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, codigoAtividade])
+  @@index([userId, modulo])
+  @@index([status])
+  
+  @@map("atividade_progresso")
+}
+
+// ==================== AGENTES ESTRESSORES ====================
+
+model StressorAgent {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String
+  category    String
+  
+  // Adaptação para teens
+  exemplosTeen Json?
+  dicasTeen    Json?
+  
+  createdAt   DateTime @default(now())
+
+  assessments StressorAssessment[]
+
+  @@map("stressor_agents")
+}
+
+model StressorAssessment {
+  id          String   @id @default(cuid())
+  userId      String
+  stressorId  String
+  impactLevel Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stressor StressorAgent  @relation(fields: [stressorId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, stressorId])
+  @@map("stressor_assessments")
+}
+
+// ==================== TESTES & AVALIAÇÕES ====================
+
+model CheckupTest {
+  id                   String   @id @default(cuid())
+  userId               String
+  version              Int      @default(1)
+  
+  agenteEstressor      String
+  dicaSelecionada      String
+  desafio1             String
+  desafio2             String
+  desafio3             String
+  prazoResolucao       String
+  
+  statusDesafio        String   @default("ativo")
+  dataInicio           DateTime @default(now())
+  dataConclusao        DateTime?
+  feedback             String?
+  
+  analiseIA            String?  @db.Text
+  qualidadeAfetada     String?
+  explanatorioQualidade String? @db.Text
+  recomendacoes        Json?
+  
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, version])
+  @@map("checkup_tests")
+}
+
+model RaioXTest {
+  id                        String   @id @default(cuid())
+  userId                    String
+  version                   Int      @default(1)
+  
+  respostas                 Json     @default("{}")
+  perfilFinanceiro          String?
+  pontosFortesFragilidades  Json?
+  recomendacoes             Json?
+  analiseIA                 String?  @db.Text
+  perfilPsicoFinanceiro     String?  @db.Text
+  
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  
+  user                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, version])
+  @@map("raio_x_tests")
+}
+
+model MapaTesouroTest {
+  id                      String   @id @default(cuid())
+  userId                  String
+  version                 Int      @default(1)
+  
+  respostas               Json     @default("{}")
+  
+  // ISJF - Índice da Saúde da Jornada Financeira
+  indiceISJF              Float?
+  classificacaoISJF       String?
+  
+  // 6 Determinantes Executivos
+  determinanteGAR         Float?
+  determinanteHAB         Float?
+  determinanteREC         Float?
+  determinanteRI          Float?
+  determinanteOP          Float?
+  determinanteUTIL        Float?
+  
+  // 4 Variáveis Comportamentais
+  variavelM1              Float?
+  variavelM2              Float?
+  variavelM3              Float?
+  variavelM4              Float?
+  
+  // 22 Objetivos de Controle
+  objetivosCalculados     Json?
+  agentesRestritores      Json?
+  agentesFacilitadores    Json?
+  
+  planoAcao               Json?
+  analiseIA               String?  @db.Text
+  recomendacoes           Json?
+  
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+  
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, version])
+  @@index([indiceISJF])
+  @@index([classificacaoISJF])
+  @@map("mapa_tesouro_tests")
+}
+
+// ==================== OBJETIVOS DE CONTROLE ISJF ====================
+
+model ControlObjective {
+  id          String   @id @default(cuid())
+  codigo      String   @unique  // BS, CONTRA, CD, etc.
+  nome        String
+  descricao   String   @db.Text
+  categoria   String   // GAR, HAB, REC, RI
+  peso        Float
+  ordem       Int
+  
+  // Adaptação para teens
+  descricaoTeen String? @db.Text
+  exemplosTeen  Json?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  assessments ControlAssessment[]
+
+  @@map("control_objectives")
+}
+
+model ControlAssessment {
+  id              String   @id @default(cuid())
+  userId          String
+  objectiveId     String
+  mapaTestId      String?
+  
+  nivelAtendimento Int     // 0-10
+  ier             Float?   // Índice de Eficácia de Resposta
+  irb360          Float?   // Índice de Resiliência BRAVO360
+  
+  observacoes     String?  @db.Text
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  objective       ControlObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, objectiveId])
+  @@index([mapaTestId])
+  @@map("control_assessments")
+}
+
+model ISJFHistory {
+  id                String   @id @default(cuid())
+  userId            String
+  indiceISJF        Float
+  classificacao     String
+  
+  determinantes     Json     // 6 determinantes
+  variaveis         Json     // 4 variáveis
+  objetivos         Json     // 22 objetivos
+  
+  mapaTestId        String?
+  
+  createdAt         DateTime @default(now())
+  
+  @@index([userId, createdAt])
+  @@index([classificacao])
+  @@map("isjf_history")
+}
+
+// ==================== JORNADA FINANCEIRA ====================
+
+model JornadaFinanceira {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  
+  statusGeral       String   @default("iniciando")
+  progressoGeral    Float    @default(0)
+  
+  ultimoISJF        Float?
+  classificacaoAtual String?
+  
+  planoAcaoAtivo    Json?
+  metaPrincipal     String?
+  metasSecundarias  Json?
+  proximosPassos    Json?
+  
+  totalAtividadesConcluidas Int @default(0)
+  totalCheckups     Int      @default(0)
+  totalRaioX        Int      @default(0)
+  totalMapasTesouro Int      @default(0)
+  
+  ultimaAtualizacao DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([statusGeral])
+  @@index([ultimaAtualizacao])
+  @@map("jornada_financeira")
+}
+
+model EventoJornada {
+  id                String   @id @default(cuid())
+  userId            String
+  
+  tipo              String
+  categoria         String
+  moduloOrigem      String?
+  referenciaId      String?
+  
+  titulo            String
+  descricao         String   @db.Text
+  icone             String?
+  cor               String?
+  
+  prioridade        String   @default("normal")
+  status            String   @default("pendente")
+  
+  dataEvento        DateTime @default(now())
+  dataLimite        DateTime?
+  dataConclusao     DateTime?
+  
+  metadados         Json?
+  atividadeCodigo   String?
+  
+  visivel           Boolean  @default(true)
+  destaque          Boolean  @default(false)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, tipo])
+  @@index([userId, status])
+  @@index([userId, dataEvento])
+  @@index([categoria])
+  @@index([prioridade])
+  @@map("eventos_jornada")
+}
+
+// ==================== NOTIFICAÇÕES ====================
+
+model Notificacao {
+  id              String   @id @default(cuid())
+  userId          String
+  tipo            String
+  titulo          String
+  mensagem        String   @db.Text
+  checkupId       String?
+  dataLimite      DateTime?
+  lida            Boolean  @default(false)
+  remetenteId     String?
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, lida])
+  @@index([dataLimite])
+  @@index([tipo])
+  @@map("notificacoes")
+}
+
+// ==================== INSTITUIÇÕES & TURMAS ====================
+
+model EducationalInstitution {
+  id          String   @id @default(cuid())
+  nome        String
+  tipo        String   // escola, faculdade, curso
+  cidade      String?
+  estado      String?
+  
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  classes     Class[]
+
+  @@map("educational_institutions")
+}
+
+model Class {
+  id              String   @id @default(cuid())
+  institutionId   String?
+  nome            String
+  codigo          String   @unique
+  descricao       String?
+  
+  anoLetivo       String?
+  turno           String?
+  
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  institution     EducationalInstitution? @relation(fields: [institutionId], references: [id])
+  professors      ProfessorClass[]
+  teens           TeenClass[]
+
+  @@map("classes")
+}
+
+model ProfessorClass {
+  id          String   @id @default(cuid())
+  professorId String
+  classId     String
+  
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  professor   User     @relation("ProfessorToClass", fields: [professorId], references: [id], onDelete: Cascade)
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  
+  @@unique([professorId, classId])
+  @@map("professor_classes")
+}
+
+model TeenClass {
+  id          String   @id @default(cuid())
+  teenId      String
+  classId     String
+  
+  enrolled    Boolean  @default(true)
+  enrolledAt  DateTime @default(now())
+  
+  teen        User     @relation(fields: [teenId], references: [id], onDelete: Cascade)
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  
+  @@unique([teenId, classId])
+  @@map("teen_classes")
+}
+
+model TeenResponsible {
+  id            String   @id @default(cuid())
+  teenId        String
+  responsibleId String
+  
+  relacao       String   // pai, mae, responsavel_legal, etc.
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  
+  teen          User     @relation("TeenToResponsible", fields: [teenId], references: [id], onDelete: Cascade)
+  responsible   User     @relation("ResponsibleToTeen", fields: [responsibleId], references: [id], onDelete: Cascade)
+  
+  @@unique([teenId, responsibleId])
+  @@map("teen_responsibles")
+}
+
+// ==================== MENSAGENS ====================
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  
+  assunto     String
+  conteudo    String   @db.Text
+  
+  lida        Boolean  @default(false)
+  dataLeitura DateTime?
+  
+  tipo        String   @default("mensagem") // mensagem, notificacao, alerta
+  prioridade  String   @default("normal")
+  
+  createdAt   DateTime @default(now())
+  
+  sender      User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver    User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  
+  @@index([receiverId, lida])
+  @@index([senderId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+// ==================== AUDITORIA & SEGURANÇA ====================
+
+model AuditLog {
+  id            String   @id @default(cuid())
+  eventType     String
+  severity      String
+  userId        String?
+  userEmail     String?
+  ipAddress     String
+  userAgent     String?
+  resource      String?
+  action        String?
+  details       String?
+  success       Boolean
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([severity])
+  @@index([createdAt])
+  @@index([ipAddress])
+  @@map("audit_logs")
+}
+
+// ==================== NEWSLETTER ====================
+
+model NewsletterSubscriber {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  nome          String?
+  origem        String    @default("landing")
+  ativo         Boolean   @default(true)
+  dataInscricao DateTime  @default(now())
+  dataCancelamento DateTime?
+  ipAddress     String?
+  
+  @@index([email])
+  @@index([origem])
+  @@index([ativo])
+  @@index([dataInscricao])
+  @@map("newsletter_subscribers")
 }

@@ -5,13 +5,15 @@ import { getServerSession } from 'next-auth';
 const prisma = new PrismaClient();
 
 /**
- * GET /api/isjf/latest?userId=xxx
- * Retorna o último ISJF calculado do usuário
+ * GET /api/isjf/history?userId=xxx&limit=10
+ * Retorna o histórico de ISJF do usuário
  */
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const queryUserId = searchParams.get('userId');
+    const limitParam = searchParams.get('limit');
+    const limit = limitParam ? parseInt(limitParam) : 10;
 
     // Obter userId (de autenticação ou query)
     const session = await getServerSession();
@@ -24,27 +26,28 @@ export async function GET(req: Request) {
       );
     }
 
-    // Buscar último histórico
-    const latest = await prisma.iSJFHistory.findFirst({
+    // Buscar histórico
+    const history = await prisma.iSJFHistory.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
+      take: limit,
     });
 
-    if (!latest) {
-      return NextResponse.json(
-        { error: 'Nenhum histórico ISJF encontrado' },
-        { status: 404 }
-      );
-    }
+    // Contar total
+    const total = await prisma.iSJFHistory.count({
+      where: { userId },
+    });
 
     return NextResponse.json({
       success: true,
-      data: latest,
+      data: history,
+      total,
+      limit,
     });
   } catch (err: any) {
-    console.error('Erro ao buscar último ISJF:', err);
+    console.error('Erro ao buscar histórico ISJF:', err);
     return NextResponse.json(
-      { error: 'Erro ao buscar último ISJF', details: err.message },
+      { error: 'Erro ao buscar histórico ISJF', details: err.message },
       { status: 500 }
     );
   }
