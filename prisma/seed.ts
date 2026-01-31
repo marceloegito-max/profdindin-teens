@@ -1,101 +1,103 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, ActivityModule, CoreDrive } from '@prisma/client';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Iniciando o Seed...');
+  console.log('🌱 Iniciando seed...');
 
-  // --- Ler JSON de atividades ---
   const jsonPath = join(process.cwd(), 'prisma', 'BANCO_ATIVIDADES_TEENS.json');
   const raw = readFileSync(jsonPath, 'utf-8');
   const db = JSON.parse(raw);
 
-  // --- 1) Agentes Estressores ---
+  /* =========================
+     1. Stressor Agents
+  ========================== */
   const stressores = [
-    { name: 'Ansiedade do Agora', icon: 'clock', category: 'emocional', description: 'Desejo imediato de consumo sem pensar no amanhã.' },
-    { name: 'Pressão do Grupo', icon: 'users', category: 'social', description: 'Gastar para se sentir aceito pelos amigos.' },
-    { name: 'Medo de Perder (FOMO)', icon: 'alert-circle', category: 'emocional', description: 'Medo de ficar de fora de tendências ou eventos.' },
-    { name: 'Desejo de Status', icon: 'award', category: 'social', description: 'Comprar itens para demonstrar poder ou riqueza.' },
-    { name: 'Falta de Limites', icon: 'slash', category: 'comportamental', description: 'Dificuldade em dizer não para si mesmo.' },
-    { name: 'Imediatismo', icon: 'zap', category: 'comportamental', description: 'Busca por prazer rápido ignorando metas de longo prazo.' },
-    { name: 'Comparação Social', icon: 'eye', category: 'social', description: 'Sentir-se inferior ao ver a vida (editada) dos outros.' },
-    { name: 'Publicidade Agressiva', icon: 'megaphone', category: 'externo', description: 'Cair em gatilhos de marketing e promoções falsas.' },
-    { name: 'Desorganização', icon: 'shuffle', category: 'comportamental', description: 'Não saber para onde o dinheiro está indo.' },
-    { name: 'Insegurança', icon: 'shield-off', category: 'emocional', description: 'Comprar para tentar preencher vazios emocionais.' },
-    { name: 'Impulsividade', icon: 'trending-up', category: 'comportamental', description: 'Agir sem refletir, especialmente em compras online.' },
-    { name: 'Falta de Propósito', icon: 'compass', category: 'emocional', description: 'Gastar por gastar, sem ter um sonho ou meta clara.' },
+    { name: 'Ansiedade do Agora', icon: 'clock', category: 'emocional', description: 'Desejo imediato de consumo.' },
+    { name: 'Pressão do Grupo', icon: 'users', category: 'social', description: 'Gastar para se sentir aceito.' },
+    { name: 'FOMO', icon: 'alert-circle', category: 'emocional', description: 'Medo de perder algo.' },
   ];
 
   for (const s of stressores) {
     await prisma.stressorAgent.upsert({
       where: { name: s.name },
-      update: { description: s.description, icon: s.icon, category: s.category },
+      update: s,
       create: s,
     });
   }
-  console.log('✅ Agentes estressores criados/atualizados.');
 
-  // --- 2) Atividades ---
-  const atividades = (db.atividades || []).map((a: any) => ({
-    codigo: a.codigo,
-    modulo: a.modulo,
-    nome: a.nome,
-    objetivo: a.objetivo,
-    pontos: a.pontos ?? 0,
-    prazoSugerido: a.prazoSugerido ?? a.duracao ?? null,
-    prerequisitos: a.prerequisitos ?? [],
-    ferramenta: a.ferramenta ?? null,
-    criteriosSucesso: a.criteriosSucesso ?? [],
-    modelosReferencia: a.modelosReferencia ?? [],
-    impactoJornada: a.impactoJornada ?? null,
-    tarefas: a.tarefas ?? [],
-  }));
+  console.log('✅ StressorAgents criados');
 
-  for (const act of atividades) {
+  /* =========================
+     2. Activities
+  ========================== */
+  for (const a of db.atividades) {
     await prisma.activity.upsert({
-      where: { codigo: act.codigo },
+      where: { code: a.codigo },
       update: {
-        modulo: act.modulo,
-        nome: act.nome,
-        objetivo: act.objetivo,
-        pontos: act.pontos,
-        prazoSugerido: act.prazoSugerido,
-        prerequisitos: act.prerequisitos,
-        ferramenta: act.ferramenta,
-        criteriosSucesso: act.criteriosSucesso,
-        modelosReferencia: act.modelosReferencia,
-        impactoJornada: act.impactoJornada,
-        tarefas: act.tarefas,
+        module: a.modulo as ActivityModule,
+        name: a.nome,
+        objective: a.objetivo,
+        tasks: a.tarefas,
+        tools: a.ferramenta ?? {},
+        successCriteria: a.criteriosSucesso ?? [],
+        referenceModels: a.modelosReferencia ?? [],
+        impact: a.impactoJornada ?? '',
+        points: a.pontos ?? 0,
+        suggestedDuration: a.prazoSugerido ?? '',
+        prerequisites: a.prerequisitos ?? [],
+        coreDrives: [],
       },
-      create: act,
+      create: {
+        code: a.codigo,
+        module: a.modulo as ActivityModule,
+        name: a.nome,
+        objective: a.objetivo,
+        tasks: a.tarefas,
+        tools: a.ferramenta ?? {},
+        successCriteria: a.criteriosSucesso ?? [],
+        referenceModels: a.modelosReferencia ?? [],
+        impact: a.impactoJornada ?? '',
+        points: a.pontos ?? 0,
+        suggestedDuration: a.prazoSugerido ?? '',
+        prerequisites: a.prerequisitos ?? [],
+        coreDrives: [],
+      },
     });
   }
-  console.log(`✅ ${atividades.length} atividades criadas/atualizadas.`);
 
-  // --- 3) Badges iniciais ---
+  console.log('✅ Activities criadas');
+
+  /* =========================
+     3. Badges
+  ========================== */
   const badges = [
-    { nome: 'Primeiros Passos', descricao: 'Iniciou a jornada.', icone: '🌱' },
-    { nome: 'Mestre do Poupar', descricao: 'Economizou o primeiro real.', icone: '🐷' },
-    { nome: 'Antifrágil', descricao: 'Superou um teste de estresse financeiro.', icone: '🛡️' },
+    {
+      name: 'Primeiros Passos',
+      description: 'Completou a primeira atividade',
+      icon: '🌱',
+      criteria: 'COMPLETE_ACTIVITIES',
+      requiredValue: 1,
+    },
   ];
 
   for (const b of badges) {
     await prisma.badge.upsert({
-      where: { nome: b.nome },
+      where: { name: b.name },
       update: b,
       create: b,
     });
   }
-  console.log('✅ Badges criadas/atualizadas.');
 
-  console.log('🚀 Seed finalizado com sucesso!');
+  console.log('✅ Badges criados');
+  console.log('🎉 Seed finalizado com sucesso');
 }
 
 main()
   .catch((e) => {
-    console.error('Erro no seed:', e);
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {
