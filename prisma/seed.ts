@@ -59,7 +59,7 @@ for (const s of stressores) {
       where: { code: act.code },
       update: {
         module: act.module,
-        title: act.nome,
+        nome: act.nome,
         objective: act.objective,
         xpReward: act.xpReward,
         duration: act.duration,
